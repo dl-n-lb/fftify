@@ -26,3 +26,6 @@ Outputs a sine wave with properties specified by the parameters passed.
 (--frequency, -f: frequency of the wave in Hz)
 (--samples, -s: number of samples to generate)
 (--cos, -c: produce a cosine wave instead of a sine wave)
+
+# comp (comp.c)
+like sine but adds to existing signal coming from a file specified with input
