@@ -94,7 +94,7 @@ int main(int argc, char **argv) {
       v = sin(f * t);
     }
     //fwrite(&v, 4, 1, outf);
-    printf("%f\n", v);
+    fprintf(outf, "%f\n", v);
     t += time / samples;
   }
   

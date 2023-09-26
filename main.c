@@ -125,7 +125,7 @@ int main(int argc, char **argv) {
   
   FILE *inf = stdin;
   if (strcmp(sinf, "stdin") != 0) {
-    inf = fopen(sinf, "rb");
+    inf = fopen(sinf, "wb");
     if (!inf) {
       fprintf(stderr, "Invalid input file passed\n");
       clap_destroy(&parser);
@@ -173,10 +173,10 @@ int main(int argc, char **argv) {
   }
   arr_for_each(cf64, out, it) {
     if (graph) {
-      printf("%zu %f\n", idx, creal(*it));
+      fprintf(outf, "%zu %f\n", idx, creal(*it));
       idx += 1;
     } else {
-      printf("%lf %lf\n", creal(*it), cimag(*it));
+      fprintf(outf, "%lf %lf\n", creal(*it), cimag(*it));
     }
   }
 

@@ -8,6 +8,14 @@ int main(int argc, char **argv) {
       .desc = "Composes a sine wave into another wave"
     });
   clap_arg_add(&parser, (clap_arg) {
+      .name = "input",
+      .alias = 'i',
+      .description = "input file",
+      .default_value = "stdin",
+      .options = CLAP_ARG_OPTIONAL
+    });
+
+  clap_arg_add(&parser, (clap_arg) {
       .name = "output",
       .alias = 'o',
       .description = "output file",
@@ -48,7 +56,8 @@ int main(int argc, char **argv) {
     clap_destroy(&parser);
     return 1;
   }
-  
+
+  const char *sinf = clap_get(parser, "input");
   const char *soutf = clap_get(parser, "output");
   const char *stime = clap_get(parser, "time");
   const char *sfreq = clap_get(parser, "frequency");
@@ -74,9 +83,20 @@ int main(int argc, char **argv) {
     return 1;
   }
 
+  FILE *inf = stdin;
+  if (strcmp(soutf, "stdin") != 0) {
+    inf = fopen(sinf, "rb");
+    if (!inf) {
+      fprintf(stderr, "Invalid input file passed\n");
+      clap_destroy(&parser);
+      return 1;
+    }
+  }
+
+
   FILE *outf = stdout;
   if (strcmp(soutf, "stdout") != 0) {
-    outf = fopen(soutf, "rb");
+    outf = fopen(soutf, "wb");
     if (!outf) {
       fprintf(stderr, "Invalid output file passed\n");
       clap_destroy(&parser);
@@ -86,15 +106,15 @@ int main(int argc, char **argv) {
 
   double t = 0.f;
   double v = 0.f;
-  assert(scanf("%lf\n", &v) == 1);
+  assert(fscanf(inf, "%lf\n", &v) == 1);
   double f = 2 * M_PI * freq;
-  for (int i = 0; i < samples && scanf("%lf\n", &v) == 1; ++i) {
+  for (int i = 0; i < samples && fscanf(inf, "%lf\n", &v) == 1; ++i) {
     if (cosine) {
       v += cos(f * t);
     } else {
       v += sin(f * t);
     }
-    printf("%f\n", v);
+    fprintf(outf, "%f\n", v);
     t += time / samples;
   }
   
